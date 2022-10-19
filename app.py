@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from flask import Flask
+from flask import Flask, redirect, render_template, url_for
 from urllib.parse import urlparse
 
 
@@ -25,6 +25,12 @@ def get_db_connection():
     return connection
 
 
+@app.route('/<path:text>', methods=['GET', 'POST'])
+def all_routes(text):
+    if text.startswith('pages') or text.startswith('sections'):
+        return render_template(text)
+
+
 @app.route('/')
 def hello_world():  # put application's code here
     conn = get_db_connection()
@@ -41,7 +47,7 @@ def hello_world():  # put application's code here
 
     # close the communication with the PostgreSQL
     cur.close()
-    return 'Hello World!\n' + 'db_version: ' + db_version[0]
+    return render_template('index.html', version=db_version[0])
 
 
 if __name__ == '__main__':
