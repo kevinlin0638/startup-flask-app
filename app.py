@@ -1,11 +1,47 @@
+import os
+import psycopg2
 from flask import Flask
+from urllib.parse import urlparse
+
 
 app = Flask(__name__)
 
 
+def get_db_connection():
+    result = urlparse(os.environ['DATABASE_URL'])
+    username = result.username
+    password = result.password
+    database = result.path[1:]
+    hostname = result.hostname
+    port = result.port
+    connection = psycopg2.connect(
+        database=database,
+        user=username,
+        password=password,
+        host=hostname,
+        port=port
+    )
+
+    return connection
+
+
 @app.route('/')
 def hello_world():  # put application's code here
-    return 'Hello World!'
+    conn = get_db_connection()
+    # create a cursor
+    cur = conn.cursor()
+
+    # execute a statement
+    print('PostgreSQL database version:')
+    cur.execute('SELECT version()')
+
+    # display the PostgreSQL database server version
+    db_version = cur.fetchone()
+    print(db_version[0])
+
+    # close the communication with the PostgreSQL
+    cur.close()
+    return 'Hello World!\n' + 'db_version: ' + db_version[0]
 
 
 if __name__ == '__main__':
