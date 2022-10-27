@@ -1,10 +1,15 @@
 import os
 import psycopg2
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, redirect, render_template, url_for, jsonify, send_from_directory
 from urllib.parse import urlparse
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='frontend/build')
+
+
+@app.route("/", defaults={'path':''})
+def serve(path):
+    return send_from_directory(app.static_folder,'index.html')
 
 
 def get_db_connection():
@@ -24,30 +29,30 @@ def get_db_connection():
 
     return connection
 
-
-@app.route('/<path:text>', methods=['GET', 'POST'])
-def all_routes(text):
-    if text.startswith('pages') or text.startswith('sections'):
-        return render_template(text)
-
-
-@app.route('/')
-def hello_world():  # put application's code here
-    conn = get_db_connection()
-    # create a cursor
-    cur = conn.cursor()
-
-    # execute a statement
-    print('PostgreSQL database version:')
-    cur.execute('SELECT version()')
-
-    # display the PostgreSQL database server version
-    db_version = cur.fetchone()
-    print(db_version[0])
-
-    # close the communication with the PostgreSQL
-    cur.close()
-    return render_template('index.html', version=db_version[0])
+#
+# @app.route('/<path:text>', methods=['GET', 'POST'])
+# def all_routes(text):
+#     if text.startswith('pages') or text.startswith('sections'):
+#         return render_template(text)
+#
+#
+# @app.route('/')
+# def hello_world():  # put application's code here
+#     conn = get_db_connection()
+#     # create a cursor
+#     cur = conn.cursor()
+#
+#     # execute a statement
+#     print('PostgreSQL database version:')
+#     cur.execute('SELECT version()')
+#
+#     # display the PostgreSQL database server version
+#     db_version = cur.fetchone()
+#     print(db_version[0])
+#
+#     # close the communication with the PostgreSQL
+#     cur.close()
+#     return render_template('index.html', version=db_version[0])
 
 
 if __name__ == '__main__':
