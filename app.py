@@ -1,15 +1,15 @@
 import os
 import psycopg2
-from flask import Flask, redirect, render_template, url_for, jsonify, send_from_directory
+from flask import Flask, send_from_directory
 from urllib.parse import urlparse
 
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/build')
 
 
-@app.route("/", defaults={'path':''})
-def serve(path):
-    return send_from_directory(app.static_folder,'index.html')
+@app.route("/", defaults={'path': ''})
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
 
 
 def get_db_connection():
@@ -29,15 +29,8 @@ def get_db_connection():
 
     return connection
 
-#
-# @app.route('/<path:text>', methods=['GET', 'POST'])
-# def all_routes(text):
-#     if text.startswith('pages') or text.startswith('sections'):
-#         return render_template(text)
-#
-#
-# @app.route('/')
-# def hello_world():  # put application's code here
+# @app.route('/api/your_path', methods=['GET', 'POST'])
+# def api_name():  # put application's code here
 #     conn = get_db_connection()
 #     # create a cursor
 #     cur = conn.cursor()
@@ -49,6 +42,13 @@ def get_db_connection():
 #     # display the PostgreSQL database server version
 #     db_version = cur.fetchone()
 #     print(db_version[0])
+
+#     # select something from database
+#     cur.execute('SELECT AAA FROM TABLE_BB WHERE TRUE')
+#
+#     # display the PostgreSQL database server version
+#     ret = cur.fetchmany()
+#     print(ret)
 #
 #     # close the communication with the PostgreSQL
 #     cur.close()
