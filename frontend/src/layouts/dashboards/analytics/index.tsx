@@ -42,6 +42,7 @@ import reportsLineChartData from "layouts/dashboards/analytics/data/reportsLineC
 import booking1 from "assets/images/products/product-1-min.jpg";
 import booking2 from "assets/images/products/product-2-min.jpg";
 import booking3 from "assets/images/products/product-3-min.jpg";
+import { Counter } from "features/counter/Counter";
 
 function Analytics(): JSX.Element {
   const { sales, tasks } = reportsLineChartData;
