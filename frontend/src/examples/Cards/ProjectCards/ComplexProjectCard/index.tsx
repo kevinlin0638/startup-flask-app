@@ -25,6 +25,11 @@ import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
+import team1 from "assets/images/team-1.jpg";
+import team2 from "assets/images/team-2.jpg";
+import team3 from "assets/images/team-3.jpg";
+import team5 from "assets/images/team-5.jpg";
+import team4 from "assets/images/team-4.jpg";
 
 // Declaring prop types for the ComplexProjectCard
 interface Props {
@@ -33,6 +38,7 @@ interface Props {
   title: string;
   dateTime?: string;
   description: ReactNode;
+  teacher: string;
   members?: string[];
   dropdown?: {
     action?: (...arg: any) => void;
@@ -41,6 +47,16 @@ interface Props {
   [key: string]: any;
 }
 
+const randGroup = [
+  [team1, team2, team3],
+  [team3, team5, team4],
+  [team1, team5, team4, team3],
+  [team1, team5, team4, team2],
+  [team2, team5, team4, team3],
+  [team2, team5, team1, team4, team3],
+]
+let members = randGroup[Math.floor(Math.random() * 6)]
+
 // Custom styles for ComplexProjectCard
 function ComplexProjectCard({
   color,
@@ -48,11 +64,14 @@ function ComplexProjectCard({
   title,
   dateTime,
   description,
-  members,
+  teacher,
+  credit,
   dropdown,
 }: Props): JSX.Element {
+
   const renderMembers = members.map((member, key) => {
     const memberKey = `member-${key}`;
+
 
     return (
       <MDAvatar
@@ -89,8 +108,8 @@ function ComplexProjectCard({
             bgColor={color}
             sx={{ p: 1, mt: -6, borderRadius: ({ borders: { borderRadius } }) => borderRadius.xl }}
           />
-          <MDBox ml={2} mt={-2} lineHeight={0}>
-            <MDTypography variant="h6" textTransform="capitalize" fontWeight="medium">
+          <MDBox ml={2} mt={-1} lineHeight={0}>
+            <MDTypography style={{height: 48}} variant="h6" textTransform="capitalize" fontWeight="medium">
               {title}
             </MDTypography>
             {members.length > -1 ? <MDBox display="flex">{renderMembers}</MDBox> : null}
@@ -114,30 +133,28 @@ function ComplexProjectCard({
         <MDBox my={2} lineHeight={1}>
           <MDTypography variant="button" fontWeight="light" color="text">
             {description}
+            <br />
+            Teacher: {teacher}
           </MDTypography>
         </MDBox>
         <Divider />
         <MDBox display="flex" justifyContent="space-between" alignItems="center">
-          {members.length > -1 ? (
-            <MDBox display="flex" flexDirection="column" lineHeight={0}>
-              <MDTypography variant="button" fontWeight="medium">
-                {members.length}
-              </MDTypography>
-              <MDTypography variant="button" fontWeight="regular" color="secondary">
-                Participants
-              </MDTypography>
-            </MDBox>
-          ) : null}
-          {dateTime ? (
-            <MDBox display="flex" flexDirection="column" lineHeight={0}>
-              <MDTypography variant="button" fontWeight="medium">
-                {dateTime}
-              </MDTypography>
-              <MDTypography variant="button" fontWeight="regular" color="secondary">
-                Due date
-              </MDTypography>
-            </MDBox>
-          ) : null}
+          <MDBox display="flex" flexDirection="column" lineHeight={0}>
+            <MDTypography variant="button" fontWeight="medium">
+              {credit}
+            </MDTypography>
+            <MDTypography variant="button" fontWeight="regular" color="secondary">
+              Credit
+            </MDTypography>
+          </MDBox>
+          <MDBox display="flex" flexDirection="column" lineHeight={0}>
+            <MDTypography variant="button" fontWeight="medium">
+              {dateTime}
+            </MDTypography>
+            <MDTypography variant="button" fontWeight="regular" color="secondary">
+              Duration
+            </MDTypography>
+          </MDBox>
         </MDBox>
       </MDBox>
     </Card>

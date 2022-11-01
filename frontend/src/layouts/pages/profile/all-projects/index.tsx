@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -41,172 +41,252 @@ import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 import team5 from "assets/images/team-5.jpg";
-import logoSlack from "assets/images/small-logos/logo-slack.svg";
-import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
-import logoXD from "assets/images/small-logos/logo-xd.svg";
-import logoAsana from "assets/images/small-logos/logo-asana.svg";
-import logoInvision from "assets/images/small-logos/logo-invision.svg";
-import logoAtlassian from "assets/images/small-logos/logo-atlassian.svg";
+import logoSlack from "assets/images/BS.png";
+import accountancy from "assets/images/Accountancy.png";
+import BA from "assets/images/BA.png";
+import CE from "assets/images/CE.png";
+import CS from "assets/images/CS.png";
+import Marketing from "assets/images/Marketing.png";
+import PageLayout from "examples/LayoutContainers/PageLayout";
+import AppBar from "@mui/material/AppBar";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import breakpoints from "assets/theme/base/breakpoints";
+import Autocomplete from "@mui/material/Autocomplete";
+import MDInput from "components/MDInput";
+import FormField from "layouts/ecommerce/products/edit-product/components/FormField";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { searchAsync, selectData, selectStatus } from "features/search/searchSlice";
 
 function AllProjects(): JSX.Element {
-  // ComplexProjectCard dropdown menu state
-  const [slackBotMenu, setSlackBotMenu] = useState(null);
-  const [premiumSupportMenu, setPremiumSupportMenu] = useState(null);
-  const [designToolsMenu, setDesignToolsMenu] = useState(null);
-  const [lookingGreatMenu, setLookingGreatMenu] = useState(null);
-  const [developerFirstMenu, setDeveloperFirstMenu] = useState(null);
+  const [semester, setSemester] = useState("2018-Fall");
+  const [department, setDepartment] = useState("All");
+  const [course, setCourse] = useState("");
+  const [teacher, setTeacher] = useState("");
+  const dispatch = useAppDispatch()
+  const status = useAppSelector(selectStatus)
+  const data = useAppSelector(selectData)
+  const [tabsOrientation, setTabsOrientation] = useState<"horizontal" | "vertical">("horizontal");
 
-  // TeamProfileCard dropdown menu handlers
-  const openSlackBotMenu = (event: any) => setSlackBotMenu(event.currentTarget);
-  const closeSlackBotMenu = () => setSlackBotMenu(null);
-  const openPremiumSupportMenu = (event: any) => setPremiumSupportMenu(event.currentTarget);
-  const closePremiumSupportMenu = () => setPremiumSupportMenu(null);
-  const openDesignToolsMenu = (event: any) => setDesignToolsMenu(event.currentTarget);
-  const closeDesignToolsMenu = () => setDesignToolsMenu(null);
-  const openLookingGreatMenu = (event: any) => setLookingGreatMenu(event.currentTarget);
-  const closeLookingGreatMenu = () => setLookingGreatMenu(null);
-  const openDeveloperFirstMenu = (event: any) => setDeveloperFirstMenu(event.currentTarget);
-  const closeDeveloperFirstMenu = () => setDeveloperFirstMenu(null);
+  useEffect(() => {
+    // A function that sets the orientation state of the tabs.
+    function handleTabsOrientation() {
+      return window.innerWidth < breakpoints.values.sm
+        ? setTabsOrientation("vertical")
+        : setTabsOrientation("horizontal");
+    }
 
-  // Dropdown menu template for the ComplexProjectCard
-  const renderMenu = (state: any, close: any) => (
-    <Menu
-      anchorEl={state}
-      anchorOrigin={{ vertical: "top", horizontal: "left" }}
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={Boolean(state)}
-      onClose={close}
-      keepMounted
-    >
-      <MenuItem onClick={close}>Action</MenuItem>
-      <MenuItem onClick={close}>Another action</MenuItem>
-      <MenuItem onClick={close}>Something else here</MenuItem>
-    </Menu>
-  );
+    /**
+     The event listener that's calling the handleTabsOrientation function when resizing the window.
+     */
+    window.addEventListener("resize", handleTabsOrientation);
+
+    // Call the handleTabsOrientation function to set the state with the initial value.
+    handleTabsOrientation();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleTabsOrientation);
+  }, [tabsOrientation]);
+
+  const semesters = [
+    {
+      label: "The 1st semester of 2018/2019",
+      value: "2018-Fall"
+    },
+    {
+      label: "The 2nd semester of 2018/2019",
+      value: "2018-Spring"
+    },
+    {
+      label: "The 1st semester of 2019/2020",
+      value: "2019-Fall"
+    },
+    {
+      label: "The 2nd semester of 2019/2020",
+      value: "2019-Spring"
+    },
+    {
+      label: "The 1st semester of 2020/2021",
+      value: "2020-Fall"
+    },
+    {
+      label: "The 2nd semester of 2020/2021",
+      value: "2020-Spring"
+    },
+    ]
+
+
 
   return (
-    <DashboardLayout>
-      <MDBox width="calc(100% - 48px)" position="absolute" top="1.75rem">
-        <DashboardNavbar light absolute />
-      </MDBox>
-      <Header />
-      <MDBox pb={3}>
-        <Grid container alignItems="center">
-          <Grid item xs={12} md={7}>
-            <MDBox mb={1}>
-              <MDTypography variant="h5">Some of Our Awesome Projects</MDTypography>
-            </MDBox>
-            <MDBox mb={2}>
-              <MDTypography variant="body2" color="text">
-                This is the paragraph where you can write more details about your projects. Keep you
-                user engaged by providing meaningful information.
+    <PageLayout>
+      <div style={{margin: 64}}>
+        <Header />
+        <MDBox pb={3}>
+          <Grid container alignItems="start">
+            <Grid item xs={12} md={12}>
+              <Grid container xs={12} md={12}>
+                <Grid item xs={12} md={4} lg={3} mr={3}>
+                  <MDBox mb={3}>
+                    <MDBox mb={1.625} display="inline-block">
+                      <MDTypography
+                        component="label"
+                        variant="button"
+                        fontWeight="regular"
+                        color="text"
+                        textTransform="capitalize"
+                      >
+                        Academic year
+                      </MDTypography>
+                    </MDBox>
+                    <Autocomplete
+                      defaultValue={{label: "The 1st semester of 2018/2019"}}
+                      options={semesters as any}
+                      getOptionLabel={(option: any) => option.label}
+                      onChange={(v) => {
+                        const selected = semesters.find(s => s.label === v.currentTarget.textContent)
+                        if(selected) {
+                          setSemester(selected.value)
+                        }
+                      }}
+                      renderInput={(params) => <MDInput {...params} variant="standard" />}
+                    />
+                  </MDBox>
+                </Grid>
+                <Grid item xs={12} md={4} lg={3}>
+                  <MDBox mb={3}>
+                    <MDBox mb={1.625} display="inline-block">
+                      <MDTypography
+                        component="label"
+                        variant="button"
+                        fontWeight="regular"
+                        color="text"
+                        textTransform="capitalize"
+                      >
+                        Department
+                      </MDTypography>
+                    </MDBox>
+                    <Autocomplete
+                      defaultValue={'All'}
+                      options={['All', 'Accountancy', 'Business Analytics', 'Biomedical Sciences',
+                        'Computer Engineering', 'Computer Science', 'Marketing'
+                      ]}
+                      onChange={(v) => {
+                        setDepartment(v.currentTarget.textContent)
+                      }}
+                      renderInput={(params) => <MDInput {...params} variant="standard" />}
+                    />
+                  </MDBox>
+                </Grid>
+              </Grid>
+              <MDBox mb={1}>
+                <MDTypography variant="h5">Search by Name</MDTypography>
+              </MDBox>
+
+
+              <MDTypography
+                component="label"
+                variant="button"
+                fontWeight="regular"
+                color="text"
+                textTransform="capitalize"
+              >
+                Course Name/Course ID
               </MDTypography>
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={5} sx={{ textAlign: "right" }}>
-            <MDButton variant="gradient" color="info">
-              <Icon>add</Icon>&nbsp; Add New
-            </MDButton>
-          </Grid>
-        </Grid>
-        <MDBox mt={5}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={1.5} mt={1.5}>
-                <ComplexProjectCard
-                  image={logoSlack}
-                  title="slack bot"
-                  description="If everything I did failed - which it doesn't, I think that it actually succeeds."
-                  dateTime="02.03.22"
-                  members={[team1, team2, team3, team4, team5]}
-                  dropdown={{
-                    action: openSlackBotMenu,
-                    menu: renderMenu(slackBotMenu, closeSlackBotMenu),
-                  }}
-                />
+              <MDBox mt={1}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    <MDBox mb={2}>
+                      <MDInput value={course} type="text"
+                               variant="standard" fullWidth
+                      onChange={(event: any)=> {
+                        console.log(event.target.value);
+                        setCourse(event.target.value)
+                      }}/>
+                    </MDBox>
+                  </Grid>
+                </Grid>
+              </MDBox>
+
+              <MDTypography
+                component="label"
+                variant="button"
+                fontWeight="regular"
+                color="text"
+                textTransform="capitalize"
+              >
+                Teacher's Name
+              </MDTypography>
+              <MDBox mt={1}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    <MDBox mb={2}>
+                      <MDInput value={teacher} type="text"
+                            variant="standard" fullWidth
+                            onChange={(event: any)=> {
+                              setTeacher(event.target.value)
+                            }}/>
+                    </MDBox>
+                  </Grid>
+                </Grid>
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={1.5} mt={1.5}>
-                <ComplexProjectCard
-                  image={logoSpotify}
-                  title="premium support"
-                  description="Pink is obviously a better color. Everyone’s born confident, and everything’s taken away from you."
-                  dateTime="22.11.21"
-                  members={[team1, team2, team3]}
-                  dropdown={{
-                    action: openPremiumSupportMenu,
-                    menu: renderMenu(premiumSupportMenu, closePremiumSupportMenu),
-                  }}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={1.5} mt={1.5}>
-                <ComplexProjectCard
-                  image={logoXD}
-                  title="design tools"
-                  description="Constantly growing. We’re constantly making mistakes from which we learn and improve."
-                  dateTime="06.03.20"
-                  members={[team1, team2, team3, team4]}
-                  dropdown={{
-                    action: openDesignToolsMenu,
-                    menu: renderMenu(designToolsMenu, closeDesignToolsMenu),
-                  }}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={1.5} mt={1.5}>
-                <ComplexProjectCard
-                  image={logoAsana}
-                  title="looking great"
-                  description="You have the opportunity to play this game of life you need to appreciate every moment."
-                  dateTime="14.03.24"
-                  members={[team1, team2, team3, team4, team5, team3]}
-                  dropdown={{
-                    action: openLookingGreatMenu,
-                    menu: renderMenu(lookingGreatMenu, closeLookingGreatMenu),
-                  }}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={1.5} mt={1.5}>
-                <ComplexProjectCard
-                  image={logoInvision}
-                  title="developer first"
-                  description="For standing out. But the time is now to be okay to be the greatest you."
-                  dateTime="16.01.22"
-                  members={[team1, team2, team3, team4]}
-                  dropdown={{
-                    action: openDeveloperFirstMenu,
-                    menu: renderMenu(developerFirstMenu, closeDeveloperFirstMenu),
-                  }}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={1.5} mt={1.5}>
-                <ComplexProjectCard
-                  image={logoAtlassian}
-                  title="Product Development"
-                  description="We strive to embrace and drive change in our industry. We are happy to work at such a project."
-                  dateTime="16.01.22"
-                  members={[team1, team2, team3, team4]}
-                  dropdown={{
-                    action: openDeveloperFirstMenu,
-                    menu: renderMenu(developerFirstMenu, closeDeveloperFirstMenu),
-                  }}
-                />
-              </MDBox>
+            <Grid item xs={12} md={5} sx={{ textAlign: "left" }}>
+              <MDButton
+                disabled={status !== "idle"}
+                variant="gradient" color="info" onClick={() => {
+                dispatch(searchAsync({
+                  semester: semester,
+                  department: department,
+                  course: course,
+                  teacher: teacher
+                }))
+              }}>
+                <Icon>search</Icon>&nbsp; Search
+              </MDButton>
             </Grid>
           </Grid>
+
+          <MDBox mt={5}>
+            <MDTypography variant="h5">{data.length} Results</MDTypography>
+          </MDBox>
+          <MDBox mt={2}>
+            <Grid container spacing={3}>
+              {data.map(data => {
+
+                let icon = logoSlack
+                if(data[2] === 'Biomedical Sciences')
+                  icon = logoSlack
+                else if(data[2] === 'Accountancy')
+                  icon = accountancy
+                else if(data[2] === 'Business Analytics')
+                  icon = BA
+                else if(data[2] === 'Computer Engineering')
+                  icon = CE
+                else if(data[2] === 'Computer Science')
+                  icon = CS
+                else if(data[2] === 'Marketing')
+                  icon = Marketing
+
+                return (
+                  <Grid item xs={12} md={6} lg={4}>
+                    <MDBox mb={1.5} mt={1.5}>
+                      <ComplexProjectCard
+                        image={icon}
+                        title={data[1]}
+                        description={data[0] + " - " + data[2]}
+                        teacher={data[3]}
+                        dateTime={data[5]}
+                        credit={data[4]}
+                      />
+                    </MDBox>
+                  </Grid>
+                )
+              })}
+            </Grid>
+          </MDBox>
         </MDBox>
-      </MDBox>
-      <Footer />
-    </DashboardLayout>
+      </div>
+    </PageLayout>
   );
 }
-
 export default AllProjects;

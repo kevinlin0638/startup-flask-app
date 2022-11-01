@@ -104,6 +104,20 @@ const routes = [
   { type: "divider", key: "divider-0" },
   {
     type: "collapse",
+    icon: <Icon fontSize="medium">receipt_long</Icon>,
+    name: "Course",
+    key: "course",
+    collapse: [
+      {
+        name: "Search",
+        key: "analytics",
+        route: "/course/search",
+        component: <AllProjects />,
+      },
+    ]
+  },
+  {
+    type: "collapse",
     name: "Dashboards",
     key: "dashboards",
     icon: <Icon fontSize="medium">dashboard</Icon>,
