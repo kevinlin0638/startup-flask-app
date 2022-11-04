@@ -75,9 +75,6 @@ function Header({ children }: { children?: ReactNode }): JSX.Element {
               <MDTypography variant="h5" fontWeight="medium">
                 Course Search System
               </MDTypography>
-              <MDTypography variant="button" color="text" fontWeight="regular">
-                CEO / Co-Founder
-              </MDTypography>
             </MDBox>
           </Grid>
         </Grid>
